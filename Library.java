@@ -12,6 +12,7 @@ import java.io.IOException;
 public class Library {
 	static Scanner sc = new Scanner(System.in);
 	static Random rand = new Random();
+<<<<<<< HEAD
 	
 	
 	public static void main(String[] args) {
