@@ -6,7 +6,7 @@ public class Textbook extends Book {
 	int randId;
 	String s;
 
-	public Textbook(String title, String author, int year) {
+	public Textbook(String title, String author, String year) {
 		super(title, author, year);
 	}	
 

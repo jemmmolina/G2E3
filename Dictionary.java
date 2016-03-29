@@ -6,7 +6,7 @@ public class Dictionary extends Book {
 	int randId;
 	String s;
 
-	public Dictionary(String title, String author, int year) {
+	public Dictionary(String title, String author, String year) {
 		super(title, author, year);
 	}
 

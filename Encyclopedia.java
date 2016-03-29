@@ -6,7 +6,7 @@ public class Encyclopedia extends Book {
 	int randId;
 	String s;
 
-	public Encyclopedia(String title, String author, int year) {
+	public Encyclopedia(String title, String author, String year) {
 		super(title, author, year);
 	}
 
