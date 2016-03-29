@@ -5,10 +5,12 @@ import java.util.Random;
 public class Library {
 	static Scanner sc = new Scanner(System.in);
 	static Random rand = new Random();
+	final static int limit = 1000;
+	
 	public static void main(String[] args) {
 		String username;
-		//Book[] borrowedBooks;
-		//Book[] libraryBooks;
+		Book[] borrowedBooks;
+		Book[] libraryBooks = new Book[limit];
 
 		int choice;
 		username = welcomeUser();
@@ -16,7 +18,7 @@ public class Library {
 
 		do {
 			choice = mainMenu();
-
+	
 			switch(choice) {
 				case 1:
 					break;
