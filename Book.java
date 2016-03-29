@@ -1,11 +1,12 @@
-public class Book {
-	private int id;
-	private String title;
-	private String author;
-	private int year;
+package G2E3;
 
-	public Book(int id, String title, String author, int year) {
-		this.id = id;
+public class Book {
+	String id = "";
+	String title = "";
+	String author = "";
+	String year = "";
+
+	public Book( String title, String author, String year) {
 		this.title = title;
 		this.author = author;
 		this.year = year;
