@@ -35,7 +35,6 @@ public class Library {
 	private static void readFile(File file2, String[] echos){
 		try{	
 			String line;
-			BufferedWriter writer = new BufferedWriter(new FileWriter(file2, true));
 			BufferedReader reader = new BufferedReader(new FileReader(file2));
 			
 			while((line = reader.readLine()) != null){
@@ -43,10 +42,8 @@ public class Library {
 				Book bago = new Book(echos[0],echos[1],echos[2]);
 				insertAtHash(bago);
 			}
-			reader.close();
-			//writer.close();
-			
-			}
+			reader.close();			
+		}
 		catch(FileNotFoundException e){
 			//e.printStackTrace();
 			System.out.println("FileNotFoundException");
@@ -75,6 +72,25 @@ public class Library {
 				map.put(t, a);
 				map.get(t).add(new Book(book.title,book.author,book.year));
 			}
+	}
+	
+	private static void saveFile(Hashmap map){
+		int size;
+		for(String key : map.keySet()){
+			try{	
+				BufferedWriter writer = new BufferedWriter(new FileWriter(file2, false));
+				size = map.get(key).size();
+				
+				for(int i=0;i<size; i++){
+					writer.write(map.get(key).get(i).classification+","+map.get(key).get(i).title+","+map.get(key).get(i).author+","+map.get(key).get(i).year+","+map.get(key).get(i).id);
+				}
+				
+				writer.close();
+			
+			}
+		}
+			
+	
 	}
 	
 	private static void printBooks(Book[] book, int counter){
