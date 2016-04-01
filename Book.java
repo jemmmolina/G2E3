@@ -1,6 +1,6 @@
-package G2E3;
+//package G2E3;
 
-public class Book{
+public class Book {
 	String id = "";
 	String title = "";
 	String author = "";
@@ -10,6 +10,7 @@ public class Book{
 		this.title = title;
 		this.author = author;
 		this.year = year;
+		//this.id = id;
 	}
 
 	//public void setId();

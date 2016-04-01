@@ -8,7 +8,7 @@ public class Novel extends Book {
 
 	public Novel(String title, String author, String year) {
 		super(title, author, year);
-	}
+	}	
 
 	public void setId() {
 		randId = rand.nextInt(16)+1000;

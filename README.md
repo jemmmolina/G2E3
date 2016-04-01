@@ -1,6 +1,2 @@
-#Young Blood Exer 3 Library Information System
-
-* Cassion, Claudine Grace C.
-* Lenon, Kris DA.
-* Molina, Jemimah Mae H.
-* Plata, Krezly Reann M.
+# G2E3
+Young Blood Exercise 3

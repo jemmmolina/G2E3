@@ -1,3 +1,4 @@
+
 import java.util.Random;
 import java.lang.Integer;
 
@@ -8,7 +9,7 @@ public class Encyclopedia extends Book {
 
 	public Encyclopedia(String title, String author, String year) {
 		super(title, author, year);
-	}
+	}	
 
 	public void setId() {
 		randId = rand.nextInt(16)+1000;
