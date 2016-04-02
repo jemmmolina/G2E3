@@ -13,7 +13,7 @@ public class User implements Serializable{
 		this.borrowedBooks.add(book);
 	}
 
-	public Book returnBook(int book){ ////////////
+	public Book returnBook(int book){ 
 		Book b = borrowedBooks.get(book);
 		borrowedBooks.remove(book);
 		return b;
