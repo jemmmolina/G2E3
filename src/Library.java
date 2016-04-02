@@ -12,79 +12,59 @@ import java.io.FileWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.FileInputStream;
+
+import java.io.Serializable;
 
 
-public class Library {
+
+
+public class Library implements Serializable {
 	private static Map<String, List<Book>> map = new HashMap<String, List<Book>>();
 	public static void main(String[] args) {
-		int counter = 0;
-		String[] carry = new String[4];
+		int choice = 0;
+		String[] carry = new String[4];	
+		User u = new User("");
+		File file = new File("books.txt");
+		readFile( file, carry);
+		printBooks();
+		loadUser(u);
 		
-			File file = new File("books.txt");
-			
-			readFile( file, carry);
-			
-			for(String key : map.keySet()){
-				System.out.println(key);
+		while(choice!=5){
+			choice = mainMenu();
+			switch(choice){
+				case 1:
+					borrow(u);
+					break;
+				case 2:
+					bookReturn(u);
+					break;
+				case 3:
+					printBooks();
+					break;
+				case 4:
+					u.printBorrowedBooks();
+					break;
+				case 5:
+					break;
+				default:
+					System.out.println("Wrong input.");
+					break;
 			}
-			
+			saveFile(file);
+		}
+		serializeUser(u);			
 	}
 	
 	private static Scanner sc = new Scanner(System.in);
-	
-	private static void readFile(File file2, String[] echos){
-		try{	
-			String line;
-			BufferedWriter writer = new BufferedWriter(new FileWriter(file2, true));
-			BufferedReader reader = new BufferedReader(new FileReader(file2));
-			
-			while((line = reader.readLine()) != null){
-				echos = line.split(",");
-				Book bago = new Book(echos[0],echos[1],echos[2]);
-				insertAtHash(bago);
-			}
-			reader.close();
-			//writer.close();
-			
-			}
-		catch(FileNotFoundException e){
-			//e.printStackTrace();
-			System.out.println("FileNotFoundException");
-		}
-		catch(IOException ex){
-			//ex.printStackTrace();
-			System.out.println("IOException");
-		}
-		catch(Exception ex){
-			ex.printStackTrace();
-			System.out.println("Exception");
-		}
-		finally{
-			//printBooks(book,counter);
-		}
-	}
-	
-	private static void insertAtHash(Book book){
-			Book b;
-			String t = book.title;
-			
-			if(map.containsKey(t)){
-				map.get(t).add(new Book(book.title,book.author,book.year));
-			}else{
-				List<Book> a = new ArrayList<Book>();
-				map.put(t, a);
-				map.get(t).add(new Book(book.title,book.author,book.year));
-			}
-	}
-	
-	private static void printBooks(Book[] book, int counter){
-		for(int i = 0; i<counter; i++){
-			System.out.println("Title: "+book[i].title);
-			System.out.println("Author: "+book[i].author);
-			System.out.println("Year Published: "+book[i].year);
-			System.out.println("ID: "+book[i].id);
-			System.out.println();			
-		}
+
+	private static String welcomeUser() {
+		System.out.println("\nWELCOME TO THE LIBRARY!\n");
+		System.out.print("Enter your name: ");
+		return sc.nextLine();
 	}
 	
 	private static int mainMenu() {
@@ -99,11 +79,157 @@ public class Library {
 		return sc.nextInt();
 	}
 
-	private static String welcomeUser() {
-		System.out.println("");
-		System.out.println("WELCOME TO THE LIBRARY!");
-		System.out.println("");
-		System.out.print("Enter your name: ");
-		return sc.nextLine();
+	private static void bookReturn(User u){
+		if(u.getBookCount() == 0){
+			System.out.println("\nYou did not borrow any books.");
+		}else{
+			System.out.print("Enter title of book: ");
+			sc.nextLine();
+			String title = sc.nextLine();
+
+			for(int i=0; i< u.getBookCount(); i++){
+				if(u.getListOfBooks().get(i).getTitle().equals(title)){
+					insertAtHash(u.returnBook(i));
+					System.out.println("\nYou returned " + title + " to the library.");
+					break;
+				}
+			}
+		}
+	}
+
+	private static void borrow(User u){
+		System.out.print("Enter title of book: ");
+		sc.nextLine();
+		String title = sc.nextLine();
+
+		if(map.containsKey(title)){
+			u.borrowBook(map.get(title).get(0));
+			map.get(title).remove(map.get(title).get(0));
+			System.out.println("\nYou borrowed " + title + " from the library.");
+
+		}else{
+			System.out.println("\nSorry, book not available.");
+		}
+	}
+	
+	private static void loadUser(User u){
+		try{
+			FileInputStream file = new FileInputStream("u.ser");
+			ObjectInputStream in = new ObjectInputStream(file);
+			u = (User) in.readObject();
+			in.close();
+		}
+		catch(FileNotFoundException e){
+			//e.printStackTrace();
+			u = new User(welcomeUser());
+			serializeUser(u);
+			//System.out.println("FileNotFoundException");
+		}
+		catch(Exception ex){
+			ex.printStackTrace();
+			System.out.println("Exception");
+		}
+	}
+
+	private static void serializeUser(User u){
+		try{
+			FileOutputStream file = new FileOutputStream("u.ser");
+			ObjectOutputStream out = new ObjectOutputStream(file);
+			out.writeObject(u);
+			file.close();
+		}
+		catch(Exception ex){
+			ex.printStackTrace();
+			System.out.println("Exception");
+		}
+	}
+
+	private static void readFile(File file2, String[] echos){
+		try{
+			int i;	
+			String line;
+			BufferedReader reader = new BufferedReader(new FileReader(file2));
+			
+		while((line = reader.readLine()) != null){
+				echos = line.split(",");
+				Book bago = new Book(echos[0], echos[1],echos[2], echos[3], "");
+				int randId = bago.generateId();
+				Random r = new Random();
+				int count = r.nextInt(6) + 15;
+				for(i=0; i<count; i++) {
+					bago.setId(randId, i);
+					insertAtHash(bago);
+				}
+			}
+			reader.close();
+			
+		}
+		catch(FileNotFoundException e){
+			//e.printStackTrace();
+			System.out.println("FileNotFoundException");
+		}
+		catch(IOException ex){
+			//ex.printStackTrace();
+			System.out.println("IOException");
+		}
+		catch(Exception ex){
+			ex.printStackTrace();
+			System.out.println("Exception");
+		}
+	}
+	
+	private static void saveFile(File file2){
+		int size;
+		try{	
+			BufferedWriter writer = new BufferedWriter(new FileWriter(file2, false));
+			for(String key : map.keySet()){
+				size = map.get(key).size();
+				
+				for(int i=0;i<size;i++){
+					writer.write(map.get(key).get(i).getTitle()+","+map.get(key).get(i).getAuthor()+","+map.get(key).get(i).getYear()+","+map.get(key).get(i).getType()+","+map.get(key).get(i).getId());
+					writer.write("\n");
+				}
+			}
+			writer.close();
+			
+		}
+		catch(FileNotFoundException e){
+				//e.printStackTrace();
+			System.out.println("FileNotFoundException");
+		}
+		catch(IOException ex){
+			//ex.printStackTrace();
+			System.out.println("IOException");
+		}
+		catch(Exception ex){
+			ex.printStackTrace();
+			System.out.println("Exception");
+		}
+	}
+	
+	private static void insertAtHash(Book book){
+			Book b;
+			String t = book.getTitle();
+			
+			if(map.containsKey(t)){
+				map.get(t).add(new Book(book.getTitle(), book.getAuthor(), book.getYear(), book.getType(), book.getId()));
+			}else{
+				List<Book> a = new ArrayList<Book>();
+				map.put(t, a);
+				map.get(t).add(new Book(book.getTitle(), book.getAuthor(), book.getYear(), book.getType(), book.getId()));
+			}
+	}
+	
+	private static void printBooks(){
+		for(String key : map.keySet()){
+			for(int i = 0; i<map.get(key).size(); i++){
+				System.out.println("\nTitle: "+map.get(key).get(i).getTitle());
+				System.out.println("Author: "+map.get(key).get(i).getAuthor());
+				System.out.println("Year Published: "+map.get(key).get(i).getYear());
+				System.out.println("Type: "+map.get(key).get(i).getType());			
+				System.out.println("ID: "+map.get(key).get(i).getId());
+			}
+			System.out.println();	
+		}
 	}
 }
